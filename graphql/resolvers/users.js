@@ -25,7 +25,7 @@ async function getAccessTokenFromCode(code) {
         data: {
             client_id: process.env.GOOGLE_CLIENT_ID,
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            redirect_uri: 'http://localhost:3000/authenticate/google',
+            redirect_uri: 'https://merng-social-network.netlify.app/authenticate/google',
             grant_type: 'authorization_code',
             code,
         },

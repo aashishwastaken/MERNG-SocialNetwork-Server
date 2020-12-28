@@ -16,6 +16,7 @@ type Post{
     likes:[Like]!
     commentsCount:Int!
     likesCount:Int!
+    userPicture:String
 } 
 type Comment{
     id:ID!
@@ -32,6 +33,7 @@ type User{
     username:String!
     email:String!
     token:String!
+    picture:String
     createdAt:String!
 }
 
@@ -51,6 +53,7 @@ input LoginInput{
 type Mutation{
     register(registerInput:RegisterInput):User!,
     login(loginInput:LoginInput):User!,
+    googleLogin(code:String!):User!,
     createPost(body:String!):Post!,
     deletePost(postId:String!):String!,
     createComment(postId:String!,body:String!):Post!,

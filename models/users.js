@@ -5,6 +5,7 @@ let s1=new Schema({
     username:{type:String},
     password:{type:String},
     email:{type:String},
+    picture:{type:String},
     createdAt:{type:String}
 });
 

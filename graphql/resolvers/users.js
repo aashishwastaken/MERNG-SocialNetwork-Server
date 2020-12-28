@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const axios=require('axios');
 const {UserInputError}=require('apollo-server');
 
 const Users = require('../../models/users');
@@ -10,6 +11,44 @@ const generateToken=(user)=>{
         username, email, _id
     },process.env.SECRET_KEY,{expiresIn:'1hr'});
 }
+const generateTokenForGoogle=(user)=>{
+    const {username, email, _id,picture}=user;
+    return jwt.sign({
+        username, email, _id,picture
+    },process.env.SECRET_KEY,{expiresIn:'1hr'});
+}
+
+async function getAccessTokenFromCode(code) {
+    const { data } = await axios({
+        url: 'https://oauth2.googleapis.com/token',
+        method: 'post',
+        data: {
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            redirect_uri: 'http://localhost:3000/authenticate/google',
+            grant_type: 'authorization_code',
+            code,
+        },
+    });
+    // console.log(data); // { access_token, expires_in, token_type, refresh_token }
+    return data;
+}
+
+
+async function getGoogleUserInfo(access_token) {
+    const { data } = await axios({
+        url: 'https://www.googleapis.com/oauth2/v2/userinfo',
+        method: 'get',
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+    });
+    // console.log(data); // { id, email, given_name, family_name }
+
+    return data;
+}
+
+
 let UserMutation = {
     Mutation: {
 
@@ -86,7 +125,52 @@ let UserMutation = {
 
 
 
+        },
+        async googleLogin(root,  { code } ) {
+
+
+            var accessToken = await getAccessTokenFromCode(code);
+            var userData = await getGoogleUserInfo(accessToken.access_token);
+
+            const username=userData.name;
+            const {email,picture}=userData;
+
+            //Validate the user inputs
+            const {errors,valid}=validateRegisterInputs(username, email);
+                if(valid){
+                    throw new UserInputError('Validation Error',{
+                        errors
+                    });
+                }
+            //Check if a user already exists
+            let response=await Users.findOne({email});
+            if(!response){
+                let newUser = await new Users({
+                    username,
+                    email,
+                    picture,
+                    createdAt: new Date().toUTCString()
+                })
+    
+                 response = await newUser.save();
+            }
+            //Create new user object and save it to DB
+            
+
+      
+
+            let token = generateTokenForGoogle(response);
+
+            return {
+                ...response._doc,
+                id: response._id,
+                token
+            };
+
+
+
         }
+
 
     }
 }

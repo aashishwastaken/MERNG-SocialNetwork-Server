@@ -36,4 +36,6 @@ mongoose.connect(process.env.MONGODB,{useUnifiedTopology:true,useNewUrlParser:tr
     return server.listen({port:process.env.PORT});
 }).then((res)=>{
     console.log(`Server Running at url ${res.url}`);
+}).catch((err)=>{
+    console.error(err);
 });

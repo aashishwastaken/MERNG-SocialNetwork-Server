@@ -37,7 +37,8 @@ module.exports = {
             let post = new Posts({
                 body,
                 user: user._id,
-                username: user.username
+                username: user.username,
+                userPicture:user.picture?user.picture:'https://react.semantic-ui.com/images/avatar/large/steve.jpg'
 
             });
             let res = await post.save();

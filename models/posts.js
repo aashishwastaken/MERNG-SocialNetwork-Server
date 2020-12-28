@@ -2,6 +2,7 @@ const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 let s1=new Schema({
        username:{type:String},
+       userPicture:{type:String},
        createdAt:{type:Date, default:Date.now},
        body:String,
        comments:[

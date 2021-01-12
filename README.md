@@ -7,6 +7,6 @@ Server files in NodeJS and Apollo-Server(GraphQL)
  #### Apollo-server is used to provide methods for creating and using queries and mutations for GraphQL.
  #### Mongoose is used for Object-Data-Modeling of MongoDB.
  
- ##### Client is hosted at https://merng-social-network-client.herokuapp.com/
  ##### Server is hosted at https://merng-social-network-server.herokuapp.com/
+ ##### Client is hosted at https://merng-social-network-client.herokuapp.com/
  ###### Link to client repository https://github.com/aashishwastaken/MERNG-SocialNetwork-Client
